@@ -1,0 +1,17 @@
+---
+description: Git identity, checks, and PR workflow for mtmaya
+alwaysApply: true
+---
+
+# Git and PRs
+
+- Local identity only: `user.name=mtd3v`, `user.email=accounts@michaeltrainor.com`. Never `git config --global`.
+- Remote is Cursor Origin (`origin.cursor.com`). Do not force-push `main`.
+- After any session that changes code, run and fix before pushing:
+  - `uv run ruff check .`
+  - `uv run ruff format .`
+  - `uv run pytest`
+  - `uv run pre-commit run --all-files`
+- Planned work: implement on a feature branch and open a PR against `main` in the same session. Do not wait to be asked.
+- Small on-the-fly changes: create a branch and PR automatically. Push with `git push -u origin HEAD`.
+- Keep pytest out of the git hook. Use Origin/Cursor for PRs (`gh` only if the remote is GitHub-compatible).

@@ -1,0 +1,52 @@
+# Python / uv
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+dist/
+build/
+*.egg-info/
+.eggs/
+*.egg
+uv.toml
+
+# Docs
+site/
+
+# Tooling
+.ruff_cache/
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+.pre-commit-cache/
+
+# Environment (machine-specific UV_PYTHON paths)
+.env
+.env.*
+!.env.example
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.idea/
+.vscode/
+*.swp
+*~
+
+# Maya
+*.ma
+*.mb
+.mayaSwatches/
+mayaLog*
+*.log
+incrementalSave/
+Incrementalsave/
+*.mel.bak
+.mayaCheckStamp
+workspace.mel

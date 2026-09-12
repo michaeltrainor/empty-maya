@@ -1,0 +1,24 @@
+---
+description: Google-style docstrings for mtmaya library code
+globs: packages/**/*.py
+alwaysApply: false
+---
+
+# Python docs
+
+- Use Google-style docstrings on public modules, classes, and functions in `packages/`.
+- First line is a summary (Typer uses it as CLI help). Then a blank line, then details.
+- Sections mkdocstrings expects: `Args:`, `Returns:`, `Raises:` (omit empty ones).
+- Do not add pydocstyle (`D`) coverage to tests.
+
+```python
+def example(name: str) -> str:
+    """Return a greeting.
+
+    Args:
+        name: Person to greet.
+
+    Returns:
+        Greeting string.
+    """
+```

@@ -1,0 +1,14 @@
+"""Maya module userSetup stub for {{ name }}.
+
+Maya runs this at initialization, before the UI exists. Do not import or
+call Maya APIs here.
+"""
+
+# Maya cmds are not safe here yet.
+{% if startup_import %}
+
+try:
+    import {{ startup_import }}
+except ImportError:
+    pass
+{% endif %}

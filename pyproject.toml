@@ -1,0 +1,52 @@
+[project]
+name = "mtmaya-workspace"
+version = "0.1.0"
+description = "Workspace root for the mtmaya runtime and mtm CLI."
+authors = [{ name = "mtd3v", email = "accounts@michaeltrainor.com" }]
+requires-python = ">=3.13"
+dependencies = [
+    "mtmaya-cli",
+]
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4.0.0",
+    "pytest>=8.0.0",
+    "ruff>=0.12.0",
+]
+docs = [
+    "mkdocs-material>=9.0.0",
+    "mkdocstrings[python]>=0.27.0",
+]
+
+[tool.uv]
+package = false
+python-preference = "system"
+python-downloads = "manual"
+default-groups = ["dev", "docs"]
+
+[tool.uv.workspace]
+members = ["packages/mtmaya", "packages/mtmaya-cli"]
+
+[tool.uv.sources]
+mtmaya = { workspace = true }
+mtmaya-cli = { workspace = true }
+
+[tool.ruff]
+target-version = "py313"
+src = ["packages/mtmaya/src", "packages/mtmaya-cli/src", "tests"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "D"]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.per-file-ignores]
+"tests/**" = ["D"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+markers = [
+    "maya: tests that require Autodesk Maya / maya.standalone (skipped if Maya is unavailable)",
+]

@@ -1,0 +1,12 @@
+---
+description: Maya interpreter and packaging constraints for mtmaya
+alwaysApply: true
+---
+
+# Maya / Python
+
+- Target Maya 2027+ (CPython 3.13). The venv interpreter is Maya's `python` symlink next to `mayapy`, not uv-managed CPython.
+- Create the symlink with `scripts/macos/link-mayapy.sh`. Set `UV_PYTHON` to that path before `uv venv` / `uv sync`.
+- Do not put Maya's `bin/` on `PATH`. Do not add PyPI `PySide6`. Do not install into Maya's `site-packages`. Do not use PyMel.
+- Prefer `maya.cmds` for tools; OpenMaya 2.0 only when cmds is not enough.
+- Default pytest must not import `maya` or call `maya.standalone.initialize()` (license checkout). Gate Maya tests with `@pytest.mark.maya`.
