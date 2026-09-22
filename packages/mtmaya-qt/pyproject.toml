@@ -3,12 +3,9 @@ requires = ["uv_build>=0.12.1,<0.13"]
 build-backend = "uv_build"
 
 [project]
-name = "mtmaya"
+name = "mtmaya-qt"
 version = "0.1.0"
-description = "Maya runtime library for game-development tools."
+description = "Shared Maya and PySide6 widgets for mtmaya tools."
 authors = [{ name = "mtd3v", email = "accounts@michaeltrainor.com" }]
 requires-python = ">=3.13"
-dependencies = ["mtmaya-qt"]
-
-[tool.uv.sources]
-mtmaya-qt = { workspace = true }
+dependencies = []

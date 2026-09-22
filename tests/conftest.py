@@ -24,7 +24,7 @@ def pytest_collection_modifyitems(
 @pytest.fixture(autouse=True)
 def _reset_mtmaya_logging() -> Iterator[None]:
     saved: list[tuple[logging.Logger, list[logging.Handler], int, bool]] = []
-    for name in ("mtmaya", "mtmaya_cli"):
+    for name in ("mtmaya", "mtmaya_qt", "mtmaya_cli"):
         logger = logging.getLogger(name)
         saved.append((logger, list(logger.handlers), logger.level, logger.propagate))
     yield

@@ -6,6 +6,7 @@ requires-python = ">=3.13"
 members = [
     "mtmaya",
     "mtmaya-cli",
+    "mtmaya-qt",
     "mtmaya-workspace",
 ]
 
@@ -483,6 +484,12 @@ wheels = [
 name = "mtmaya"
 version = "0.1.0"
 source = { editable = "packages/mtmaya" }
+dependencies = [
+    { name = "mtmaya-qt" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "mtmaya-qt", editable = "packages/mtmaya-qt" }]
 
 [[package]]
 name = "mtmaya-cli"
@@ -500,6 +507,11 @@ requires-dist = [
     { name = "mtmaya", editable = "packages/mtmaya" },
     { name = "typer", specifier = ">=0.19.0" },
 ]
+
+[[package]]
+name = "mtmaya-qt"
+version = "0.1.0"
+source = { editable = "packages/mtmaya-qt" }
 
 [[package]]
 name = "mtmaya-workspace"

@@ -1,0 +1,14 @@
+---
+description: Keep the Maya runtime separate from the CLI
+alwaysApply: true
+---
+
+# Package boundaries
+
+`mtmaya` ships into Maya. `mtmaya-cli` does not.
+
+- `packages/mtmaya` must not import `mtmaya_cli`, Typer, or Jinja.
+- `packages/mtmaya-cli` must not import `maya` or call `maya.standalone.initialize()`.
+- Add a runtime dependency only when code that runs inside Maya needs it. CLI-only libraries stay on `mtmaya-cli`.
+- Shared Maya Qt widgets live in `mtmaya-qt`, which `mtmaya` depends on. `import mtmaya` must not import `mtmaya_qt`.
+- Keep public imports explicit. Do not re-export optional subsystems (Qt, modules) from `import mtmaya`.

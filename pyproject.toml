@@ -26,15 +26,21 @@ python-downloads = "manual"
 default-groups = ["dev", "docs"]
 
 [tool.uv.workspace]
-members = ["packages/mtmaya", "packages/mtmaya-cli"]
+members = ["packages/mtmaya", "packages/mtmaya-qt", "packages/mtmaya-cli"]
 
 [tool.uv.sources]
 mtmaya = { workspace = true }
+mtmaya-qt = { workspace = true }
 mtmaya-cli = { workspace = true }
 
 [tool.ruff]
 target-version = "py313"
-src = ["packages/mtmaya/src", "packages/mtmaya-cli/src", "tests"]
+src = [
+    "packages/mtmaya/src",
+    "packages/mtmaya-qt/src",
+    "packages/mtmaya-cli/src",
+    "tests",
+]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "D"]

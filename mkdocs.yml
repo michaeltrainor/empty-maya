@@ -14,6 +14,7 @@ plugins:
         python:
           paths:
             - packages/mtmaya/src
+            - packages/mtmaya-qt/src
             - packages/mtmaya-cli/src
           options:
             docstring_style: google
