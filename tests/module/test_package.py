@@ -13,6 +13,7 @@ from mtmaya_cli.module.package import (
     uninstall_package,
     uv_pip_install,
 )
+from mtmaya_cli.module.paths import maya_module_platform
 from mtmaya_cli.module.scaffold import MODULE_SUBDIRS
 
 
@@ -69,7 +70,10 @@ def test_render_package_modfile(tmp_path: Path) -> None:
     root.mkdir(parents=True)
     text = render_package_modfile(version="0.1.0", module_root=root)
     lines = text.splitlines()
-    assert lines[0] == f"+ MAYAVERSION:2027 PLATFORM:mac mtmaya 0.1.0 {root.resolve()}"
+    assert lines[0] == (
+        f"+ MAYAVERSION:2027 PLATFORM:{maya_module_platform()} "
+        f"mtmaya 0.1.0 {root.resolve().as_posix()}"
+    )
     assert lines[1] == "PYTHONPATH +:= python"
     assert text.endswith("\n")
     assert "\n\n" not in text
@@ -215,6 +219,7 @@ def test_uv_pip_install_command(
     cmd = uv_pip_install("mtmaya==0.1.0", target)
     assert cmd[1:3] == ["pip", "install"]
     assert "--target" in cmd
+    assert "--no-editable" in cmd
     assert cmd[cmd.index("--target") + 1] == str(target)
     assert cmd[-1] == "mtmaya==0.1.0"
     assert seen["cmd"] == cmd
@@ -274,6 +279,10 @@ def test_uv_pip_install_local_mtmaya_project(tmp_path: Path) -> None:
     target = tmp_path / "python"
     uv_pip_install(str(project), target)
     assert (target / "mtmaya" / "__init__.py").is_file()
+    declared = (project / "pyproject.toml").read_text(encoding="utf-8")
+    if '"mtqt"' in declared:
+        assert (target / "mtqt" / "__init__.py").is_file()
+        assert not (target / "mtqt.pth").exists()
     assert not (target / "typer").exists()
     assert not (target / "jinja2").exists()
     assert not (target / "mtmaya_cli").exists()

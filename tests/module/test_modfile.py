@@ -12,6 +12,7 @@ def test_render_modfile_has_no_blank_line_after_specifier() -> None:
         version="0.1.0",
         maya_version="2027",
         module_path=".",
+        platform="mac",
     )
     assert text.endswith("\n")
     assert not text.endswith("\n\n")
@@ -50,6 +51,7 @@ def test_render_modfile_extra_lines_have_no_blank_line() -> None:
         maya_version="2027",
         module_path=".",
         extra_lines=("PYTHONPATH +:= python", "", "  MAYA_SCRIPT_PATH +:= scripts  "),
+        platform="mac",
     )
     assert text.endswith("\n")
     assert "\n\n" not in text
@@ -57,6 +59,24 @@ def test_render_modfile_extra_lines_have_no_blank_line() -> None:
         "+ MAYAVERSION:2027 PLATFORM:mac demo 0.1.0 .",
         "PYTHONPATH +:= python",
         "MAYA_SCRIPT_PATH +:= scripts",
+    ]
+
+
+def test_render_modfile_windows_path_and_host_platform(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setattr("mtmaya_cli.module.paths.sys.platform", "win32")
+    text = render_modfile(
+        name="mtmaya",
+        version="0.1.0",
+        maya_version="2027",
+        module_path=r"C:\Users\micha\dev\autodesk\maya\2027\modules\mtmaya",
+        extra_lines=("PYTHONPATH +:= python",),
+    )
+    assert text.splitlines() == [
+        "+ MAYAVERSION:2027 PLATFORM:win64 mtmaya 0.1.0 "
+        "C:/Users/micha/dev/autodesk/maya/2027/modules/mtmaya",
+        "PYTHONPATH +:= python",
     ]
 
 
