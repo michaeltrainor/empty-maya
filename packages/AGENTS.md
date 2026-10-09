@@ -1,9 +1,3 @@
----
-description: Google-style docstrings for mtmaya library code
-globs: packages/**/*.py
-alwaysApply: false
----
-
 # Python docs
 
 - Use Google-style docstrings on public modules, classes, and functions in `packages/`.

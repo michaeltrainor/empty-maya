@@ -10,6 +10,7 @@ from pathlib import Path
 from jinja2 import Environment, StrictUndefined
 
 from mtmaya_cli.module import ModuleError
+from mtmaya_cli.module.paths import maya_module_platform
 
 _TEMPLATE_NAME = "modfile.j2"
 _TAG_KEYS = frozenset({"MAYAVERSION", "PLATFORM"})
@@ -24,7 +25,7 @@ class ModSpecifier:
         version: Module version string.
         maya_version: Maya year, e.g. ``2027``.
         module_path: Fourth field; ``.``, a sibling folder name, or a path.
-        platform: Maya ``PLATFORM`` tag, e.g. ``mac``.
+        platform: Maya ``PLATFORM`` tag: ``win64``, ``mac``, or ``linux``.
     """
 
     name: str
@@ -66,7 +67,7 @@ def render_modfile(
     version: str,
     maya_version: str,
     module_path: str,
-    platform: str = "mac",
+    platform: str | None = None,
     extra_lines: Sequence[str] = (),
 ) -> str:
     """Render a single-specifier ``.mod`` file.
@@ -80,8 +81,10 @@ def render_modfile(
         version: Module version string.
         maya_version: Maya year for ``MAYAVERSION``.
         module_path: ``.`` for a relocatable source tree, a sibling folder
-            name after copy install, or an absolute path.
-        platform: Maya ``PLATFORM`` tag.
+            name after copy install, or an absolute path. Backslashes are
+            written as ``/`` so Windows paths stay intact in the ``.mod``.
+        platform: Maya ``PLATFORM`` tag. ``None`` uses the host tag from
+            :func:`maya_module_platform`.
         extra_lines: Path appends such as ``PYTHONPATH +:= python``. Empty
             lines are dropped so Maya keeps reading the definition.
 
@@ -93,8 +96,8 @@ def render_modfile(
         name=name,
         version=version,
         maya_version=maya_version,
-        module_path=module_path,
-        platform=platform,
+        module_path=_forward_module_path(module_path),
+        platform=maya_module_platform() if platform is None else platform,
     )
     lines = [rendered.strip()]
     for extra in extra_lines:
@@ -102,6 +105,22 @@ def render_modfile(
         if stripped:
             lines.append(stripped)
     return "\n".join(lines) + "\n"
+
+
+def _forward_module_path(module_path: str) -> str:
+    """Return ``module_path`` with ``/`` separators.
+
+    Maya reads ``ModulePath`` as text. A Windows absolute path is written
+    with forward slashes. Relative names and ``.`` keep their text except
+    for that slash change.
+
+    Args:
+        module_path: Value placed in the specifier's path field.
+
+    Returns:
+        The same path with backslashes replaced by forward slashes.
+    """
+    return module_path.replace("\\", "/")
 
 
 def parse_modfile(text: str) -> ModSpecifier:

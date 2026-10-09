@@ -4,6 +4,7 @@ import pytest
 from typer.testing import CliRunner
 
 from mtmaya_cli import app
+from mtmaya_cli.module.paths import maya_module_platform
 from mtmaya_cli.module.scaffold import MODULE_SUBDIRS
 
 runner = CliRunner()
@@ -54,8 +55,9 @@ def test_install_and_uninstall(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) 
     assert "import maya" not in setup
     text = dest_mod.read_text(encoding="utf-8")
     assert text.startswith("+ MAYAVERSION:")
+    assert f"PLATFORM:{maya_module_platform()}" in text
     assert "PYTHONPATH +:= python" in text
-    assert str(dest_root.resolve()) in text
+    assert dest_root.resolve().as_posix() in text
 
     removed = runner.invoke(app, ["uninstall"])
     assert removed.exit_code == 0, removed.output

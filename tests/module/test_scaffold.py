@@ -4,6 +4,7 @@ from pathlib import Path
 import pytest
 
 from mtmaya_cli.module import ModuleError
+from mtmaya_cli.module.paths import maya_module_platform
 from mtmaya_cli.module.scaffold import (
     MODULE_SUBDIRS,
     create_module,
@@ -42,6 +43,7 @@ def test_create_module_tree(tmp_path: Path) -> None:
     assert text.endswith("\n")
     assert not text.endswith("\n\n")
     assert text.strip().endswith(".")
+    assert f"PLATFORM:{maya_module_platform()}" in text
 
 
 def test_create_module_with_plugin(tmp_path: Path) -> None:

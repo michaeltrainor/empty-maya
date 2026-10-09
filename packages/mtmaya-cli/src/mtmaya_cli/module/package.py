@@ -22,7 +22,11 @@ from urllib.request import url2pathname
 from mtmaya import __version__
 from mtmaya_cli.module import ModuleError
 from mtmaya_cli.module.modfile import render_modfile
-from mtmaya_cli.module.paths import DEFAULT_MAYA_VERSION, user_modules_dir
+from mtmaya_cli.module.paths import (
+    DEFAULT_MAYA_VERSION,
+    maya_module_platform,
+    user_modules_dir,
+)
 from mtmaya_cli.module.scaffold import create_module
 
 MODULE_NAME = "mtmaya"
@@ -112,8 +116,10 @@ def uv_pip_install(
 ) -> list[str]:
     """Install a requirement into ``target`` with ``uv pip install --target``.
 
-    Wipes nothing; callers replace ``target`` first. Strips PySide6 after
-    install so Maya's bundled Qt is not shadowed.
+    Wipes nothing; callers replace ``target`` first. Installs editable
+    path dependencies as real packages (``--no-editable``). A ``.pth``
+    link is not imported from a Maya ``PYTHONPATH`` entry. Strips PySide6
+    after install so Maya's bundled Qt is not shadowed.
 
     Args:
         spec: Requirement or local project path.
@@ -186,7 +192,9 @@ def render_package_modfile(
     """Return ``.mod`` text via :func:`render_modfile` plus ``PYTHONPATH``.
 
     Maya maps ``scripts/`` automatically. ``python/`` is not a stock module
-    folder, so the extra line puts it on ``PYTHONPATH``.
+    folder, so the extra line puts it on ``PYTHONPATH``. ``PLATFORM`` is
+    the host tag; a mac tag is skipped on Windows, so the package never
+    lands on ``sys.path``.
 
     Args:
         version: Package version written into the specifier.
@@ -202,6 +210,7 @@ def render_package_modfile(
         version=version,
         maya_version=maya_version,
         module_path=str(module_root.resolve()),
+        platform=maya_module_platform(),
         extra_lines=("PYTHONPATH +:= python",),
     )
 
@@ -350,6 +359,7 @@ def _default_uv_pip_cmd(spec: str, target: Path) -> list[str]:
         sys.executable,
         "--target",
         str(target),
+        "--no-editable",
         spec,
     ]
 
