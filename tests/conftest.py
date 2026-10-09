@@ -1,11 +1,19 @@
-"""Pytest configuration. Maya tests stay opt-in and do not grab a license by default."""
+"""Pytest configuration.
+
+Maya tests stay opt-in and do not grab a license by default. Widget tests
+use pytest-qt. The offscreen platform is set before pytest-qt imports
+PySide6, so the suite does not need a display.
+"""
 
 from __future__ import annotations
 
 import logging
+import os
 from collections.abc import Iterator
 
 import pytest
+
+os.environ.setdefault("QT_QPA_PLATFORM", "offscreen")
 
 
 def pytest_collection_modifyitems(
@@ -24,7 +32,7 @@ def pytest_collection_modifyitems(
 @pytest.fixture(autouse=True)
 def _reset_mtmaya_logging() -> Iterator[None]:
     saved: list[tuple[logging.Logger, list[logging.Handler], int, bool]] = []
-    for name in ("mtmaya", "mtmaya_cli"):
+    for name in ("mtmaya", "mtqt", "mtmaya_cli"):
         logger = logging.getLogger(name)
         saved.append((logger, list(logger.handlers), logger.level, logger.propagate))
     yield

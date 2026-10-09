@@ -1,6 +1,7 @@
 """Maya runtime library for game-development tools.
 
 Visual effects is out of scope. This package does not import the CLI.
+Qt widgets live in ``mtqt`` and are not imported here.
 
 Attributes:
     __version__: Installed package version, or ``0.0.0`` if metadata is missing.

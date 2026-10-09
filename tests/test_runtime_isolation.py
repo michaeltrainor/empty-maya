@@ -5,10 +5,13 @@ from importlib.metadata import requires
 
 def test_mtmaya_does_not_import_cli() -> None:
     sys.modules.pop("mtmaya_cli", None)
+    sys.modules.pop("mtqt", None)
     import mtmaya
 
     assert "mtmaya_cli" not in sys.modules
+    assert "mtqt" not in sys.modules
     assert importlib.util.find_spec("mtmaya.cli") is None
+    assert importlib.util.find_spec("mtmaya.qt") is None
     assert not hasattr(mtmaya, "cli")
 
 
@@ -20,3 +23,5 @@ def test_mtmaya_requires_exclude_cli_libs() -> None:
     assert "jinja" not in joined
     assert "pyside6" not in joined
     assert "mtmaya-cli" not in joined
+    assert "mtmaya-qt" not in joined
+    assert "mtqt" in joined

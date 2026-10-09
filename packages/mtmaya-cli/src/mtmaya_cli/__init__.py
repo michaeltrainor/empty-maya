@@ -44,7 +44,7 @@ def main(
     """Tools for Autodesk Maya, focused on game development."""
     configure(
         level=level_from_flags(verbose=verbose, debug=debug, quiet=quiet),
-        names=(PACKAGE_LOGGER_NAME, "mtmaya_cli"),
+        names=(PACKAGE_LOGGER_NAME, "mtqt", "mtmaya_cli"),
     )
 
 
