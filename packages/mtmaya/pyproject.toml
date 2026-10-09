@@ -8,4 +8,7 @@ version = "0.1.0"
 description = "Maya runtime library for game-development tools."
 authors = [{ name = "mtd3v", email = "accounts@michaeltrainor.com" }]
 requires-python = ">=3.13"
-dependencies = []
+dependencies = ["mtqt"]
+
+[tool.uv.sources]
+mtqt = { path = "C:/Users/micha/dev/python/empty-qt", editable = true }

@@ -12,6 +12,7 @@ dependencies = [
 dev = [
     "pre-commit>=4.0.0",
     "pytest>=8.0.0",
+    "pytest-qt>=4.4",
     "ruff>=0.12.0",
 ]
 docs = [
@@ -31,10 +32,15 @@ members = ["packages/mtmaya", "packages/mtmaya-cli"]
 [tool.uv.sources]
 mtmaya = { workspace = true }
 mtmaya-cli = { workspace = true }
+mtqt = { path = "C:/Users/micha/dev/python/empty-qt", editable = true }
 
 [tool.ruff]
 target-version = "py313"
-src = ["packages/mtmaya/src", "packages/mtmaya-cli/src", "tests"]
+src = [
+    "packages/mtmaya/src",
+    "packages/mtmaya-cli/src",
+    "tests",
+]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B", "D"]
@@ -47,6 +53,7 @@ convention = "google"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]
+qt_api = "pyside6"
 markers = [
     "maya: tests that require Autodesk Maya / maya.standalone (skipped if Maya is unavailable)",
 ]

@@ -2,7 +2,7 @@
 
 Library and CLI for Autodesk Maya tools, focused on game development. Visual effects is out of scope. macOS first; Windows 11 later.
 
-This repo is a uv workspace with two packages: `mtmaya` (Maya runtime) and `mtmaya-cli` (the `mtm` console script). `import mtmaya` does not load the CLI.
+This repo is a uv workspace with two packages: `mtmaya` (Maya runtime) and `mtmaya-cli` (the `mtm` console script). `mtmaya` depends on `mtqt` from `C:\Users\micha\dev\python\empty-qt`. `import mtmaya` does not load the CLI or Qt.
 
 ## Requirements
 
@@ -29,6 +29,8 @@ uv sync
 Do not add Maya's `bin/` to `PATH`. Do not install PyPI `PySide6` (Maya already ships it). Do not install packages into Maya's system `site-packages`.
 
 Default `pytest` does not import Maya and must pass without launching Maya. Tests that need `maya.standalone` use `@pytest.mark.maya` and are skipped when Maya is missing. Never run those from a git hook; `maya.standalone.initialize()` checks out a license.
+
+PySide6 widget tests use the `qtbot` fixture from pytest-qt in this dev environment. They must not launch Maya or construct a `QApplication`. `@pytest.mark.maya` tests must not use `qtbot`. The dev environment installs PySide6 because `mtqt` requires it. `mtm install` still strips PySide6 out of the Maya module tree.
 
 ## Install into Maya
 
