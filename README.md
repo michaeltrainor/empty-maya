@@ -1,6 +1,6 @@
 # mtmaya
 
-Library and CLI for Autodesk Maya tools, focused on game development. Visual effects is out of scope. macOS first; Windows 11 later.
+Library and CLI for Autodesk Maya tools, focused on game development. Visual effects is out of scope. Windows 11 and macOS.
 
 This repo is a uv workspace with two packages: `mtmaya` (Maya runtime) and `mtmaya-cli` (the `mtm` console script). `mtmaya` depends on `mtqt` from `C:\Users\micha\dev\python\empty-qt`. `mtmaya.core.ui` wraps Maya UI as Qt objects and builds menus and shelves. `import mtmaya` does not load the CLI, Qt, or `mtmaya.core`.
 
@@ -8,19 +8,31 @@ This repo is a uv workspace with two packages: `mtmaya` (Maya runtime) and `mtma
 
 - Autodesk Maya 2027 or later (Python 3.13)
 - [uv](https://docs.astral.sh/uv/)
-- macOS (this checkout)
+- Windows 11 or macOS
 
-Maya ships `mayapy`. uv and `venv` need an executable named `python` in the same directory. Create that symlink once per Maya install:
+Maya ships `mayapy`. uv and `venv` need an executable named `python` in the same directory. Create that symlink once per Maya install. The script prints `UV_PYTHON`. Point uv at that interpreter so it does not use a managed CPython 3.13 that cannot `import maya`.
+
+Windows:
+
+```powershell
+pwsh -File scripts/windows/link-mayapy.ps1
+# optional: pwsh -File scripts/windows/link-mayapy.ps1 2028
+# optional: pwsh -File scripts/windows/link-mayapy.ps1 --dry-run
+
+$env:UV_PYTHON = "C:\Program Files\Autodesk\Maya2027\bin\python.exe"
+uv venv --python $env:UV_PYTHON
+uv sync
+```
+
+Maya 2027 on Windows may already ship `python.exe` -> `mayapy.exe`. The script keeps that link. Creating a missing link under `Program Files` needs an elevated PowerShell.
+
+macOS:
 
 ```bash
 ./scripts/macos/link-mayapy.sh
 # optional: ./scripts/macos/link-mayapy.sh 2028
 # optional: ./scripts/macos/link-mayapy.sh --dry-run
-```
 
-The script prints `UV_PYTHON`. Point uv at that interpreter so it does not use a managed CPython 3.13 that cannot `import maya`:
-
-```bash
 export UV_PYTHON="/Applications/Autodesk/maya2027/Maya.app/Contents/bin/python"
 uv venv --python "$UV_PYTHON"
 uv sync
@@ -34,7 +46,7 @@ PySide6 widget tests use the `qtbot` fixture from pytest-qt in this dev environm
 
 ## Install into Maya
 
-`mtm install` scaffolds the stock Maya module folders (same as `mtm module new`), writes `scripts/userSetup.py`, and installs the `mtmaya` runtime graph into `python/` with `uv pip install --target`. CLI deps (typer, jinja2) stay out of that tree. Default destination is `$MAYA_APP_DIR/2027/modules` (`--maya-version` / `--maya-app-dir` override). `mtm uninstall` removes that module only.
+`mtm install` scaffolds the stock Maya module folders (same as `mtm module new`), writes `scripts/userSetup.py`, and installs the `mtmaya` runtime graph into `python/` with `uv pip install --target`. CLI deps (typer, jinja2) stay out of that tree. Default destination is `$MAYA_APP_DIR/2027/modules` (`--maya-version` / `--maya-app-dir` override). When `MAYA_APP_DIR` is unset, that root is `~/Documents/maya` on Windows and `~/Library/Preferences/Autodesk/maya` on macOS. `mtm uninstall` removes that module only.
 
 ```bash
 uv run mtm install

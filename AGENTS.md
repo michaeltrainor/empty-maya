@@ -9,7 +9,7 @@
 ## Maya / Python
 
 - Target Maya 2027+ (CPython 3.13). The venv interpreter is Maya's `python` symlink next to `mayapy`, not uv-managed CPython.
-- Create the symlink with `scripts/macos/link-mayapy.sh`. Set `UV_PYTHON` to that path before `uv venv` / `uv sync`.
+- Create the symlink with `scripts/windows/link-mayapy.ps1` on Windows or `scripts/macos/link-mayapy.sh` on macOS. Set `UV_PYTHON` to that path before `uv venv` / `uv sync`.
 - Do not put Maya's `bin/` on `PATH`. Do not add PyPI `PySide6`. Do not install into Maya's `site-packages`. Do not use PyMel.
 - Prefer `maya.cmds` for tools; OpenMaya 2.0 only when cmds is not enough.
 - Default pytest must not import `maya` or call `maya.standalone.initialize()` (license checkout). Gate Maya tests with `@pytest.mark.maya`.
@@ -70,6 +70,11 @@ class InstallResult:
 - Assert the plan (`InstallResult`, rendered `.mod` text), not only that a command exited 0.
 - A new `@pytest.mark.maya` test needs a reason to touch Maya. Parser, path, and copy behavior stay unmarked.
 - Do not start Maya, a GUI, or a subprocess to test a pure function.
+
+## Releases
+
+- `TODO.md` is the backlog. Picking a todo creates a GitHub issue before implementation.
+- Each release version is a GitHub milestone. Put that issue on the milestone.
 
 ## Git and PRs
 
