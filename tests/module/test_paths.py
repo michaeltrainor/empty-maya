@@ -2,11 +2,13 @@ from pathlib import Path
 
 import pytest
 
+from mtmaya_cli.module import ModuleError
 from mtmaya_cli.module.paths import (
     DEFAULT_MAYA_VERSION,
     default_maya_app_dir,
     default_pointer_path,
     maya_app_dir,
+    maya_module_platform,
     user_modules_dir,
 )
 
@@ -53,6 +55,23 @@ def test_user_modules_dir_reads_maya_app_dir(tmp_path: Path) -> None:
     env = {"MAYA_APP_DIR": str(tmp_path / "custom")}
     path = user_modules_dir(maya_version="2028", environ=env)
     assert path == tmp_path / "custom" / "2028" / "modules"
+
+
+@pytest.mark.parametrize(
+    ("platform", "tag"),
+    [("win32", "win64"), ("darwin", "mac"), ("linux", "linux")],
+)
+def test_maya_module_platform(
+    platform: str, tag: str, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    monkeypatch.setattr("mtmaya_cli.module.paths.sys.platform", platform)
+    assert maya_module_platform() == tag
+
+
+def test_maya_module_platform_unknown(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setattr("mtmaya_cli.module.paths.sys.platform", "cygwin")
+    with pytest.raises(ModuleError, match="Unsupported platform"):
+        maya_module_platform()
 
 
 def test_default_pointer_path(tmp_path: Path) -> None:

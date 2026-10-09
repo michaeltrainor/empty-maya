@@ -7,6 +7,8 @@ import sys
 from collections.abc import Mapping
 from pathlib import Path
 
+from mtmaya_cli.module import ModuleError
+
 DEFAULT_MAYA_VERSION = "2027"
 """Maya year used when a specifier or CLI override does not name one."""
 
@@ -63,6 +65,27 @@ def user_modules_dir(
         ``$MAYA_APP_DIR/{maya_version}/modules``.
     """
     return maya_app_dir(environ=environ) / maya_version / "modules"
+
+
+def maya_module_platform() -> str:
+    """Return the Maya ``PLATFORM`` tag for this operating system.
+
+    Maya skips a ``.mod`` entry whose ``PLATFORM`` does not match the host.
+    The tags are ``win64``, ``mac``, and ``linux``.
+
+    Returns:
+        The tag for ``sys.platform``.
+
+    Raises:
+        ModuleError: If this host has no Maya platform tag.
+    """
+    if sys.platform == "win32":
+        return "win64"
+    if sys.platform == "darwin":
+        return "mac"
+    if sys.platform.startswith("linux"):
+        return "linux"
+    raise ModuleError(f"Unsupported platform for Maya modules: {sys.platform}")
 
 
 def default_pointer_path(
