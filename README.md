@@ -2,7 +2,7 @@
 
 Library and CLI for Autodesk Maya tools, focused on game development. Visual effects is out of scope. macOS first; Windows 11 later.
 
-This repo is a uv workspace with two packages: `mtmaya` (Maya runtime) and `mtmaya-cli` (the `mtm` console script). `mtmaya` depends on `mtqt` from `C:\Users\micha\dev\python\empty-qt`. `import mtmaya` does not load the CLI or Qt.
+This repo is a uv workspace with two packages: `mtmaya` (Maya runtime) and `mtmaya-cli` (the `mtm` console script). `mtmaya` depends on `mtqt` from `C:\Users\micha\dev\python\empty-qt`. `mtmaya.core.ui` wraps Maya UI as Qt objects and builds menus and shelves. `import mtmaya` does not load the CLI, Qt, or `mtmaya.core`.
 
 ## Requirements
 

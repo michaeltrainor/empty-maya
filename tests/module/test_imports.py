@@ -29,4 +29,45 @@ def test_runtime_does_not_import_cli() -> None:
         assert "mtmaya_cli" not in roots, path
         assert "typer" not in roots, path
         assert "jinja2" not in roots, path
-        assert "maya" not in roots, path
+        deferred = _module_level_roots(tree)
+        assert "maya" not in deferred, path
+        assert "PySide6" not in deferred, path
+        assert "shiboken6" not in deferred, path
+
+
+def _module_level_roots(tree: ast.AST) -> list[str]:
+    """Return imports executed when the module is imported."""
+    names: list[str] = []
+
+    class Visitor(ast.NodeVisitor):
+        def visit_FunctionDef(self, node: ast.FunctionDef) -> None:
+            _ = node
+
+        def visit_AsyncFunctionDef(self, node: ast.AsyncFunctionDef) -> None:
+            _ = node
+
+        def visit_Lambda(self, node: ast.Lambda) -> None:
+            _ = node
+
+        def visit_If(self, node: ast.If) -> None:
+            if _is_type_checking(node.test):
+                return
+            self.generic_visit(node)
+
+        def visit_Import(self, node: ast.Import) -> None:
+            names.extend(alias.name.split(".")[0] for alias in node.names)
+
+        def visit_ImportFrom(self, node: ast.ImportFrom) -> None:
+            if node.module:
+                names.append(node.module.split(".")[0])
+
+    Visitor().visit(tree)
+    return names
+
+
+def _is_type_checking(test: ast.expr) -> bool:
+    if isinstance(test, ast.Name):
+        return test.id == "TYPE_CHECKING"
+    if isinstance(test, ast.Attribute):
+        return test.attr == "TYPE_CHECKING"
+    return False

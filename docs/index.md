@@ -2,7 +2,7 @@
 
 Library and CLI for Autodesk Maya tools, focused on game development. Visual effects is out of scope. macOS first; Windows 11 later.
 
-The Maya import package is `mtmaya`. Shared Qt widgets are `mtqt` from the `empty-qt` checkout. The installed command is `mtm` (`mtmaya-cli`).
+The Maya import package is `mtmaya`. `mtmaya.core.ui` wraps Maya UI as Qt objects and builds menus and shelves. Shared Qt widgets are `mtqt` from the `empty-qt` checkout. The installed command is `mtm` (`mtmaya-cli`).
 
 ## Local docs
 
