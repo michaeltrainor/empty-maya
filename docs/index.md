@@ -1,6 +1,6 @@
 # mtmaya
 
-Library and CLI for Autodesk Maya tools, focused on game development. Visual effects is out of scope. macOS first; Windows 11 later.
+Library and CLI for Autodesk Maya tools, focused on game development. Visual effects is out of scope. Windows 11 and macOS.
 
 The Maya import package is `mtmaya`. `mtmaya.core.ui` wraps Maya UI as Qt objects and builds menus and shelves. Shared Qt widgets are `mtqt` from the `empty-qt` checkout. The installed command is `mtm` (`mtmaya-cli`).
 
@@ -25,4 +25,4 @@ Google-style docstrings in `packages/` are rendered on the [API reference](refer
 
 ## Development
 
-See the repository README for Maya interpreter setup, `uv sync`, ruff, pytest, and pre-commit. Default pytest does not import Maya.
+See the repository README for Windows and macOS interpreter setup, `uv sync`, ruff, pytest, and pre-commit. Default pytest does not import Maya.
