@@ -72,6 +72,53 @@ macOS:
 
 The script sets `UV_PYTHON` to Maya's `python` and runs `uv venv .venv.maya`. It then installs the pin in `scripts/maya-debug.txt` into that environment with `uv pip`. It does not put Maya's `bin/` on `PATH` and does not install PyPI `PySide6`. Re-run with `--force` to replace an existing `.venv.maya`.
 
+## Attach a debugger
+
+`import mtmaya` does not start a debugger, and `userSetup.py` does not listen. Call `mtmaya.development.listen` yourself. The adapter runs inside the process, so the same call works under `mayapy` and in a running Maya. `debugpy` is imported from `.venv.maya`, not from Maya's `site-packages`.
+
+In a running Maya, from the Script Editor:
+
+```python
+import mtmaya.development as development
+
+development.listen()
+```
+
+Under `mayapy`, wait so the process stays up until the IDE attaches. `wait=True` in the Script Editor blocks Maya until then.
+
+```python
+import mtmaya.development as development
+
+development.listen(wait=True)
+```
+
+```powershell
+& "C:\Program Files\Autodesk\Maya2027\bin\mayapy.exe" -c "import mtmaya.development as development; development.listen(wait=True)"
+```
+
+```bash
+/Applications/Autodesk/maya2027/Maya.app/Contents/bin/mayapy -c "import mtmaya.development as development; development.listen(wait=True)"
+```
+
+The listener defaults to `127.0.0.1` port `5678`. Set `MTMAYA_DEBUG_VENV` to the `.venv.maya` directory when Maya is not started from this checkout (`Maya.env` is a typical place). The helper also looks next to this source tree for `.venv.maya`.
+
+Attach with a debugpy client. Map this checkout's `packages/mtmaya/src/mtmaya` to the installed module's `python/mtmaya` (`$MAYA_APP_DIR/2027/modules/mtmaya/python/mtmaya` after `mtm install`). Skip the mapping when Maya is importing this checkout directly.
+
+```json
+{
+  "name": "Attach to Maya",
+  "type": "debugpy",
+  "request": "attach",
+  "connect": { "host": "127.0.0.1", "port": 5678 },
+  "pathMappings": [
+    {
+      "localRoot": "${workspaceFolder}/packages/mtmaya/src/mtmaya",
+      "remoteRoot": "C:/Users/you/Documents/maya/2027/modules/mtmaya/python/mtmaya"
+    }
+  ]
+}
+```
+
 ## Install into Maya
 
 `mtm install` scaffolds the stock Maya module folders (same as `mtm module new`), writes `scripts/userSetup.py`, and installs the `mtmaya` runtime graph into `python/` with `uv pip install --target`. CLI deps (typer, jinja2) stay out of that tree. Default destination is `$MAYA_APP_DIR/2027/modules` (`--maya-version` / `--maya-app-dir` override). When `MAYA_APP_DIR` is unset, that root is `~/Documents/maya` on Windows and `~/Library/Preferences/Autodesk/maya` on macOS. `mtm uninstall` removes that module only.
