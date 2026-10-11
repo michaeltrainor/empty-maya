@@ -53,6 +53,8 @@ def test_install_and_uninstall(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) 
     setup = (dest_root / "scripts" / "userSetup.py").read_text(encoding="utf-8")
     assert "import mtmaya" in setup
     assert "import maya" not in setup
+    assert "debugpy" not in setup
+    assert "development.listen" not in setup
     text = dest_mod.read_text(encoding="utf-8")
     assert text.startswith("+ MAYAVERSION:")
     assert f"PLATFORM:{maya_module_platform()}" in text

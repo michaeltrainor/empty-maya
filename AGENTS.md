@@ -11,6 +11,7 @@
 - Target Maya 2027+ (CPython 3.13). The venv interpreter is Maya's `python` symlink next to `mayapy`, not uv-managed CPython.
 - Create the symlink with `scripts/windows/link-mayapy.ps1` on Windows or `scripts/macos/link-mayapy.sh` on macOS. Set `UV_PYTHON` to that path before `uv venv` / `uv sync`.
 - `.venv.maya` is a second environment for debugging inside Maya. Create it with `scripts/windows/venv-maya.ps1` or `scripts/macos/venv-maya.sh`. That script runs `uv venv .venv.maya` with `UV_PYTHON` set to Maya's `python`, then installs `debugpy` from `scripts/maya-debug.txt`. Leave the project `.venv` for pytest, ruff, and `mtm`. Do not `uv sync` the project into `.venv.maya`, and do not add `debugpy` to `mtmaya`.
+- Start a debugger with `mtmaya.development.listen`. `import mtmaya` must not import `mtmaya.development`. `userSetup.py` must not listen. The helper loads `debugpy` from `.venv.maya` and listens in-process so the same call works under `mayapy` and in a running Maya.
 - Do not put Maya's `bin/` on `PATH`. Do not add PyPI `PySide6`. Do not install into Maya's `site-packages`. Do not use PyMel.
 - Prefer `maya.cmds` for tools; OpenMaya 2.0 only when cmds is not enough.
 - Default pytest must not import `maya` or call `maya.standalone.initialize()` (license checkout). Gate Maya tests with `@pytest.mark.maya`.
