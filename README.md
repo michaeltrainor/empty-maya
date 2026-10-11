@@ -66,6 +66,26 @@ uv run mtm module install --maya-version 2029
 
 `mtm -v` / `--verbose` logs INFO diagnostics to stderr; `--debug` logs DEBUG; `-q` / `--quiet` logs only errors. Command results still go to stdout. Default is warnings-only.
 
+## Headless scene
+
+`mtmaya.core.session.initialize` opens an empty Maya scene under `mayapy` for tool development. It calls `maya.standalone.initialize` and `maya.cmds.file(new=True, force=True)`. Startup scripts and plugin autoload stay untouched. `import mtmaya` does not start a session, and `userSetup.py` must not call `initialize`.
+
+When that call started Maya, leaving the process turns undo off, calls `maya.standalone.uninitialize`, and hard-exits with `os._exit` so `mayapy` does not hang. `sys.exit(code)` keeps `code`. Call `uninitialize()` when the script is finished. It closes Maya and ends the process. In a Maya that is already running, `initialize` returns without changing the scene and without exiting.
+
+```python
+from mtmaya.core.session import initialize
+
+initialize()
+```
+
+```powershell
+& "C:\Program Files\Autodesk\Maya2027\bin\mayapy.exe" -c "from mtmaya.core.session import initialize; initialize()"
+```
+
+```bash
+/Applications/Autodesk/maya2027/Maya.app/Contents/bin/mayapy -c "from mtmaya.core.session import initialize; initialize()"
+```
+
 ## Development
 
 ```bash
