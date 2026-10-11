@@ -8,6 +8,7 @@ Versions match `pyproject.toml`. Nothing is tagged yet. `0.1.0` is the initial c
 
 ### Added
 
+- `scripts/windows/venv-maya.ps1` and `scripts/macos/venv-maya.sh` create `.venv.maya` from Maya's Python and install `debugpy` there. The project `.venv` and Maya's `site-packages` stay unchanged. ([#9](https://github.com/michaeltrainor/empty-maya/issues/9))
 - `scripts/windows/link-mayapy.ps1` creates `python.exe` next to `mayapy.exe`, the same setup `scripts/macos/link-mayapy.sh` provides on macOS. ([#11](https://github.com/michaeltrainor/empty-maya/pull/11))
 - `mtmaya.core.ui` wraps Maya UI as Qt objects and builds menus and shelves. Maya, PySide6, and shiboken6 are imported only when a helper runs. `import mtmaya` does not load this module. ([#5](https://github.com/michaeltrainor/empty-maya/pull/5))
 

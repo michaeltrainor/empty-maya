@@ -24,6 +24,8 @@ uv venv --python $env:UV_PYTHON
 uv sync
 ```
 
+That creates the project `.venv`. Debugging inside Maya uses a separate `.venv.maya`, described below.
+
 Maya 2027 on Windows may already ship `python.exe` -> `mayapy.exe`. The script keeps that link. Creating a missing link under `Program Files` needs an elevated PowerShell.
 
 macOS:
@@ -38,11 +40,37 @@ uv venv --python "$UV_PYTHON"
 uv sync
 ```
 
+That creates the project `.venv` on macOS as well.
+
 Do not add Maya's `bin/` to `PATH`. Do not install PyPI `PySide6` (Maya already ships it). Do not install packages into Maya's system `site-packages`.
 
 Default `pytest` does not import Maya and must pass without launching Maya. Tests that need `maya.standalone` use `@pytest.mark.maya` and are skipped when Maya is missing. Never run those from a git hook; `maya.standalone.initialize()` checks out a license.
 
 PySide6 widget tests use the `qtbot` fixture from pytest-qt in this dev environment. They must not launch Maya or construct a `QApplication`. `@pytest.mark.maya` tests must not use `qtbot`. The dev environment installs PySide6 because `mtqt` requires it. `mtm install` still strips PySide6 out of the Maya module tree.
+
+## Debug inside Maya
+
+`.venv.maya` uses Maya's Python so `debugpy` can be imported without installing into Maya's `site-packages` or the project `.venv`. `debugpy` is not a dependency of `mtmaya`. The directory is gitignored. Leave the project `.venv` for pytest, ruff, and `mtm`.
+
+Windows:
+
+```powershell
+pwsh -File scripts/windows/link-mayapy.ps1
+pwsh -File scripts/windows/venv-maya.ps1
+# optional: pwsh -File scripts/windows/venv-maya.ps1 --dry-run
+# optional: pwsh -File scripts/windows/venv-maya.ps1 --force
+```
+
+macOS:
+
+```bash
+./scripts/macos/link-mayapy.sh
+./scripts/macos/venv-maya.sh
+# optional: ./scripts/macos/venv-maya.sh --dry-run
+# optional: ./scripts/macos/venv-maya.sh --force
+```
+
+The script sets `UV_PYTHON` to Maya's `python` and runs `uv venv .venv.maya`. It then installs the pin in `scripts/maya-debug.txt` into that environment with `uv pip`. It does not put Maya's `bin/` on `PATH` and does not install PyPI `PySide6`. Re-run with `--force` to replace an existing `.venv.maya`.
 
 ## Install into Maya
 

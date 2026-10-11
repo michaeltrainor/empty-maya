@@ -1,0 +1,2 @@
+# Pin for .venv.maya only. Not a dependency of the mtmaya module.
+debugpy==1.8.22

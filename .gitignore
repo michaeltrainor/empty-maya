@@ -1,5 +1,7 @@
 # Python / uv
 .venv/
+# `.venv/` does not match `.venv.maya/`.
+.venv.maya/
 venv/
 __pycache__/
 *.py[cod]
