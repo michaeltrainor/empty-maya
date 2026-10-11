@@ -12,6 +12,7 @@
 - Create the symlink with `scripts/windows/link-mayapy.ps1` on Windows or `scripts/macos/link-mayapy.sh` on macOS. Set `UV_PYTHON` to that path before `uv venv` / `uv sync`.
 - Do not put Maya's `bin/` on `PATH`. Do not add PyPI `PySide6`. Do not install into Maya's `site-packages`. Do not use PyMel.
 - Prefer `maya.cmds` for tools; OpenMaya 2.0 only when cmds is not enough.
+- Open a headless scene with `mtmaya.core.session.initialize`. It does not source `userSetup` or autoload plugins. `import mtmaya` must not import `mtmaya.core`. When `initialize` starts Maya, process exit uninitializes and hard-exits with `os._exit`. Do not call `initialize` from `userSetup.py`.
 - Default pytest must not import `maya` or call `maya.standalone.initialize()` (license checkout). Gate Maya tests with `@pytest.mark.maya`.
 
 ## Package boundaries

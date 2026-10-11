@@ -25,4 +25,4 @@ Google-style docstrings in `packages/` are rendered on the [API reference](refer
 
 ## Development
 
-See the repository README for Windows and macOS interpreter setup, `uv sync`, ruff, pytest, and pre-commit. Default pytest does not import Maya.
+See the repository README for Windows and macOS interpreter setup, `uv sync`, the headless `mtmaya.core.session`, ruff, pytest, and pre-commit. Default pytest does not import Maya.

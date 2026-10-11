@@ -2,6 +2,7 @@
 
 Visual effects is out of scope. This package does not import the CLI.
 ``mtmaya.core.ui`` wraps Maya UI and builds menus and shelves. It is not
+imported here. ``mtmaya.core.session`` opens a headless scene. It is not
 imported here. Qt widgets live in ``mtqt`` and are not imported here.
 
 Attributes:
